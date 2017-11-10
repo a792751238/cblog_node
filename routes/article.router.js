@@ -3,6 +3,7 @@
  */
 const express = require('express');
 const router = express.Router();
+const _ = require('lodash');
 
 router.post('/createArticle', addOneArticle);
 router.get('/articles', getPageArticle);
@@ -17,6 +18,7 @@ const {
     getOneArticleById,
     delOneArticleById,
     getAllArticlesCount,
+    getAllArticleDate,
     increasePV
 } = require('../lib/model/article.model');
 
@@ -46,19 +48,49 @@ function getPageArticle(req, res) {
 
     return Promise.all([
         getAllArticlesCount(),
-        getAllArticles(filter)
+        getAllArticles(filter),
+        getAllArticleDate(),
     ])
         .then(results => {
             let result = marked.contentsToMarked(results[1]);
+            let filterDate = _sortOutDate(results[2]);
             let obj = {
                 articles: result,
-                count: results[0]
+                count: results[0],
+                filterDate: filterDate
             };
             res.send(obj);
         })
         .catch(err => {
             console.log('getPageArticle is error : ', err);
         });
+
+
+    function _sortOutDate(date) {
+        let new_date = date.map(i => {
+            return _.pick(i, 'createDate');
+        });
+
+        let year_arr = [];
+        let filter = {};
+
+        for (let i = 0; i < new_date.length; i++) {
+            let year = new Date(new_date[i].createDate).getFullYear();
+            if (_.indexOf(year_arr, year) === -1) {
+                year_arr.push(year);
+            }
+        }
+
+
+        for (let j = 0; j < year_arr.length; j++) {
+            let month = new_date.filter((item) => {
+                let year = new Date(item.createDate).getFullYear();
+                return year === year_arr[j];
+            });
+            filter[`${year_arr[j]}`] = month;
+        }
+        return filter;
+    }
 }
 
 // GET  /article/:id 获取相应id号的文章
@@ -67,6 +99,7 @@ function getOneArticle(req, res) {
 
     getOneArticleById(id)
         .then((result) => {
+            console.log(result);
             result = marked.contentToMarked(result);
             return result;
         })
