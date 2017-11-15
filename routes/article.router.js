@@ -45,7 +45,7 @@ function addOneArticle(req, res) {
 // GET /articles 获取分页的文章
 function getPageArticle(req, res) {
     let filter = queryFilter(req);
-
+    
     return Promise.all([
         getAllArticlesCount(),
         getAllArticles(filter),
