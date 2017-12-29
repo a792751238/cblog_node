@@ -7,7 +7,7 @@ const path = require('path');
 const fs = require('fs');
 const router = express.Router();
 const multer = require('multer');
-const {uploadPath} = require('../app.config');
+const {uploadPath} = require('../config/default');
 
 const upload = multer({
     dest: uploadPath
@@ -21,7 +21,7 @@ const {
     findPicById,
     findPic,
     removePicture
-} = require('../lib/model/file.model');
+} = require('../lib/file/models/file.model');
 
 //通过id返回一张图片
 function backPicture(req, res) {

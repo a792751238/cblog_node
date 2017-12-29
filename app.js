@@ -9,8 +9,12 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const MongoStore = require('connect-mongo')(session);
 const flash = require('connect-flash');
-const config = require('config-lite')(__dirname);
+const config = require('./config/default');
+const mongo = require('./utils/mongo');
 const app = express();
+
+mongo.init(config);
+mongo.connect();
 
 // 设置静态文件目录
 app.use(express.static(path.join(__dirname, "./public/dist")));
@@ -26,7 +30,7 @@ app.use(session({
         maxAge: config.session.maxAge// 过期时间，过期后 cookie 中的 session id 自动删除
     },
     store: new MongoStore({// 将 session 存储到 mongodb
-        url: config.mongodb// mongodb 地址
+        url: mongo.getConnectURL()// mongodb 地址
     })
 }));
 
@@ -37,6 +41,7 @@ app.use(cookieParser());
 //     uploadDir: path.join(__dirname, 'upload/picture'),// 上传文件目录
 //     keepExtensions: true// 保留后缀
 // }));
+
 
 //设置跨域访问
 app.all('*', (req, res, next) => {

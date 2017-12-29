@@ -7,4 +7,5 @@ module.exports = {
     methods: require('./methods'),
     marked: require('./marked'),
     queryFilter: require('./queryFilter'),
+    mongo: require('./mongo'),
 };
