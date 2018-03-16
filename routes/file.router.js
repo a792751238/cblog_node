@@ -10,7 +10,12 @@ const multer = require('multer');
 const {uploadPath} = require('../config/default');
 
 const upload = multer({
-    dest: uploadPath
+    destination: function (req, file, cb) {
+        cb(null, `${uploadPath}`)
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now())
+    }
 });
 
 router.post('/picture', upload.single('avatar'), savePicture);
@@ -54,6 +59,8 @@ function savePicture(req, res) {
     pic.path = req.file.destination;
     pic.size = req.file.size;
     pic.type = req.file.mimetype;
+
+    console.log(req.file);
 
     getPicAndSaved(pic)
         .then(result => {
