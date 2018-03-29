@@ -19,11 +19,11 @@ const {
     findUserById,
     findUsers,
     update
-} = require('../lib/model/user.model');
+} = require('../lib/user/models/user.model');
 
 const {
     removePicture
-} = require('../lib/model/file.model');
+} = require('../lib/file/models/file.model');
 
 //登录
 function login(req, res) {

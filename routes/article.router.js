@@ -20,11 +20,11 @@ const {
     getAllArticlesCount,
     getAllArticleDate,
     increasePV
-} = require('../lib/model/article.model');
+} = require('../lib/article/models/article.model');
 
 const {
     delCommentsById
-} = require('../lib/model/comment.model');
+} = require('../lib/comment/models/comment.model');
 
 // POST /createArticle 创建一篇新文章
 function addOneArticle(req, res) {

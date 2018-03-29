@@ -15,11 +15,11 @@ const {
     createComment,
     getCommentsById,
     delCommentById
-} = require('../lib/model/comment.model');
+} = require('../lib/comment/models/comment.model');
 
 const {
     findUserById
-} = require('../lib/model/user.model');
+} = require('../lib/user/models/user.model');
 
 
 //创建一条留言

@@ -1,8 +1,8 @@
 {
-  "name": "base_22_cblog",
+  "name": "cblog",
   "version": "1.0.0",
   "description": "this is a blog",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "supervisor --harmony server.js"

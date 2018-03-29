@@ -1,9 +1,27 @@
+const path = require('path');
+
 module.exports = {
-    port: 3001,
+    app: {
+        name: 'cblog',
+        version: '1.0.0'
+    },
+    publicPath: path.join(__dirname, '../public/dist'),
+    uploadPath: path.join(__dirname, '../upload/picture'),
+    port: process.env.PORT || 3001,
     session: {
         secret: 'cblog',
         key: 'cblog',
         maxAge: 2592000000
     },
-    mongodb: 'mongodb://localhost:27017/cblog'
+    mongodb: {
+        host: '192.168.10.245',
+        port: 27017,
+        name: 'cblog',
+        driverOptions: {
+            poolSize: 100,
+            reconnectTries: Number.MAX_VALUE,
+            connectTimeoutMS: 120000,
+            socketTimeoutMS: 240000
+        }
+    }
 };

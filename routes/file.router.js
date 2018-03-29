@@ -7,10 +7,15 @@ const path = require('path');
 const fs = require('fs');
 const router = express.Router();
 const multer = require('multer');
-const {uploadPath} = require('../app.config');
+const {uploadPath} = require('../config/default');
 
 const upload = multer({
-    dest: uploadPath
+    destination: function (req, file, cb) {
+        cb(null, `${uploadPath}`)
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now())
+    }
 });
 
 router.post('/picture', upload.single('avatar'), savePicture);
@@ -21,7 +26,7 @@ const {
     findPicById,
     findPic,
     removePicture
-} = require('../lib/model/file.model');
+} = require('../lib/file/models/file.model');
 
 //通过id返回一张图片
 function backPicture(req, res) {
@@ -54,6 +59,8 @@ function savePicture(req, res) {
     pic.path = req.file.destination;
     pic.size = req.file.size;
     pic.type = req.file.mimetype;
+
+    console.log(req.file);
 
     getPicAndSaved(pic)
         .then(result => {
