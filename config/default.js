@@ -14,7 +14,7 @@ module.exports = {
         maxAge: 2592000000
     },
     mongodb: {
-        host: '192.168.10.245',
+        host: 'localhost',
         port: 27017,
         name: 'cblog',
         driverOptions: {

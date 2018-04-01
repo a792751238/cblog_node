@@ -1,7 +1,7 @@
 /**
  * Created by easterCat on 2017/10/18.
  */
-
+const config = require('../config/default')
 
 module.exports = function (app) {
     app.get('/', (req, res) => {

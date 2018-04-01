@@ -3,22 +3,22 @@
  */
 
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
 const router = express.Router();
 const multer = require('multer');
 const {uploadPath} = require('../config/default');
+const _ = require('lodash');
+const path = require('path');
+const fs = require('fs');
+const Q = require('q');
+const readChunk = require('read-chunk');
+const imageType = require('image-type');
+const sizeOf = require('image-size');
+const BusboyParser = require('../utils/BusboyParser');
+const parsePictures = require('../utils/parsePictures');
+const mongo = require('../utils/mongo');
+const streamBuffers = require('stream-buffers');
 
-const upload = multer({
-    destination: function (req, file, cb) {
-        cb(null, `${uploadPath}`)
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now())
-    }
-});
-
-router.post('/picture', upload.single('avatar'), savePicture);
+router.post('/picture', uploadPictures);
 router.get('/picture/:pic_id', backPicture);
 
 const {
@@ -52,20 +52,21 @@ function backPicture(req, res) {
 }
 
 //上传一张图片并且保存在upload文件夹中
-function savePicture(req, res) {
-    let pic = {};
-    pic.name = req.file.originalname;
-    pic.filename = req.file.filename;
-    pic.path = req.file.destination;
-    pic.size = req.file.size;
-    pic.type = req.file.mimetype;
+async function uploadPictures(req, res) {
+    let data = await new BusboyParser(req, mongo.setFile.bind(mongo))
+        .parse()
+        .then(data => {
+            console.log('處理后的數據', data)
+            if (_.isEmpty(data)) {
+                throw new Error('data is null')
+            }
+            return parsePictures(data)
+        })
+        .catch(error => {
+            console.log('上傳圖片出現錯誤，错误原因=>', error)
+        })
 
-    console.log(req.file);
-
-    getPicAndSaved(pic)
-        .then(result => {
-            res.send(result);
-        });
+    res.send(data);
 }
 
 module.exports = router;
