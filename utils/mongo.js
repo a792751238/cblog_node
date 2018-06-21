@@ -46,8 +46,10 @@ function getConnectURL() {
     const conf = config.mongodb;
     if (!conf) throw  'mongodb config option is error';
     let url = 'mongodb://';
+    url += `${conf.username}:${conf.password}@`;
     url += `${conf.host}:${conf.port}`;
     url += `/${conf.name}`;
+    console.log('连接的数据库地址==>', url);
     return url;
 }
 
